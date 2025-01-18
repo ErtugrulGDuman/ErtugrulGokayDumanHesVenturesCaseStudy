@@ -1,0 +1,6 @@
+@ErtugrulGokayDumanHesVenturesCaseStudy_HostAddress = http://localhost:5063
+
+GET {{ErtugrulGokayDumanHesVenturesCaseStudy_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
