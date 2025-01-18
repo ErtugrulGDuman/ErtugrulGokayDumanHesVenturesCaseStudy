@@ -11,8 +11,8 @@ services:
       - db
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=EGD\SQLEXPRESS;Database=TrackingDb;User=sa;Password=1234;TrustServerCertificate=True
-      - ConnectionStrings__HangfireConnection=Server=EGD\SQLEXPRESS;Database=TrackingHangfireDb;User=sa;Password=1234;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=EGD\SQLEXPRESS;Database=TrackingDb;TrustServerCertificate=True
+      - ConnectionStrings__HangfireConnection=Server=EGD\SQLEXPRESS;Database=TrackingHangfireDb;TrustServerCertificate=True
 
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
