@@ -12,17 +12,28 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Controllers
     public class TrackingController : ControllerBase
     {
         private readonly ITrackingService _trackingService;
+        private readonly ILogger<TrackingController> _logger;
 
-        public TrackingController(ITrackingService trackingService)
+        public TrackingController(ITrackingService trackingService, ILogger<TrackingController> logger)
         {
             _trackingService = trackingService;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<ActionResult<TrackingInfo>> Create([FromBody] TrackingRequestDto request)
         {
-            var tracking = await _trackingService.CreateTrackingAsync(request.TrackingNumber);
-            return Ok(tracking);
+            try
+            {
+                _logger.LogInformation("Creating tracking for number: {TrackingNumber}", request.TrackingNumber);
+                var result = await _trackingService.CreateTrackingAsync(request.TrackingNumber);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating tracking");
+                return StatusCode(500, "An error occurred while creating the tracking");
+            }
         }
 
         [HttpGet]
