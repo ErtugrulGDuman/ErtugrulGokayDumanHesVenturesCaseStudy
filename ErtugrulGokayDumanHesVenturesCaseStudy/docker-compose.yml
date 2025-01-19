@@ -1,5 +1,4 @@
 ﻿version: '3.8'
-
 services:
   webapi:
     build:
@@ -11,18 +10,27 @@ services:
       - db
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=EGD\SQLEXPRESS;Database=TrackingDb;TrustServerCertificate=True
-      - ConnectionStrings__HangfireConnection=Server=EGD\SQLEXPRESS;Database=TrackingHangfireDb;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TrackingDb;TrustServerCertificate=True
+      - ConnectionStrings__HangfireConnection=Server=db;Database=TrackingHangfireDb;TrustServerCertificate=True
+    networks:
+      - tracking-network
 
   db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=1234
+      - MSSQL_PID=Express
     ports:
       - "1433:1433"
     volumes:
       - sqldata:/var/opt/mssql
+    networks:
+      - tracking-network
+
+networks:
+  tracking-network:
+    driver: bridge
 
 volumes:
   sqldata:

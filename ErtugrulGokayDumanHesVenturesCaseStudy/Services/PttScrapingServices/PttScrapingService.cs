@@ -10,7 +10,7 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Services.PttScrapingServices
         private const string PTT_URL = "https://gonderitakip.ptt.gov.tr/";
         private readonly ILogger<PttScrapingService> _logger;
 
-        public PttScrapingService(ILogger<PttScrapingService> logger)
+        public PttScrapingService(ILogger<PttScrapingService> logger, ChromeDriver driver)
         {
             _logger = logger;
             var options = new ChromeOptions();
@@ -28,18 +28,16 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Services.PttScrapingServices
                 _driver.Navigate().GoToUrl(PTT_URL);
 
                 // Barkod input alanını bul
-                var barcodeInput = _driver.FindElement(By.Id("barkod"));
+                var barcodeInput = _driver.FindElement(By.Id("searchForm"));
                 barcodeInput.Clear();
                 barcodeInput.SendKeys(trackingNumber);
 
                 // Sorgula butonunu bul ve tıkla
-                var searchButton = _driver.FindElement(By.CssSelector("button[type='submit']"));
+                var searchButton = _driver.FindElement(By.Id("searchButton"));
                 searchButton.Click();
 
                 // Sonucun yüklenmesini bekle
-                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-                var statusElement = wait.Until(driver =>
-                    driver.FindElement(By.CssSelector(".gonderi-durumu")));
+                var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10)); var statusElement = wait.Until(driver => driver.FindElement(By.CssSelector(".gonderi-durumu")));
 
                 return statusElement.Text.Trim();
             }
