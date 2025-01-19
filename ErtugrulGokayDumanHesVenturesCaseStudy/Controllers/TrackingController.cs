@@ -23,11 +23,28 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Controllers
         [HttpPost]
         public async Task<ActionResult<TrackingInfo>> Create([FromBody] TrackingRequestDto request)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state for tracking request.");
+                return BadRequest(ModelState); // Doğrulama hatalarını döndür
+            }
+
+            if (request == null)
+            {
+                _logger.LogWarning("Received null tracking request.");
+                return BadRequest("Tracking request cannot be null.");
+            }
+
             try
             {
                 _logger.LogInformation("Creating tracking for number: {TrackingNumber}", request.TrackingNumber);
                 var result = await _trackingService.CreateTrackingAsync(request.TrackingNumber);
                 return Ok(result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Duplicate tracking number: {TrackingNumber}", request.TrackingNumber);
+                return Conflict(new { Message = ex.Message }); // Çift kayıt için 409 hatası
             }
             catch (Exception ex)
             {

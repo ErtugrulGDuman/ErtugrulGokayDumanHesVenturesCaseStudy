@@ -24,7 +24,7 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Services.TrackingServices
 
         public async Task<TrackingInfo> CreateTrackingAsync(string trackingNumber)
         {
-            // Aynı tracking number'ın daha önce eklenip eklenmediğini kontrol et
+            // Aynı tracking number'ın daha önce eklenip eklenmediğini kontrol ettik
             var existingTracking = await _context.TrackingInfos
                 .FirstOrDefaultAsync(t => t.TrackingNumber == trackingNumber);
 

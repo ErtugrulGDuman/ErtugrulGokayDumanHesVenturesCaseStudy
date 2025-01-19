@@ -20,15 +20,20 @@ builder.Services.AddHangfire(configuration => configuration
     .UseSqlServerStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
 
 builder.Services.AddHttpClient();
+
 builder.Services.AddHangfireServer();
+
 builder.Services.AddScoped<ITrackingService, TrackingService>();
 builder.Services.AddScoped<IPttScrapingService, PttScrapingService>();
+
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -36,18 +41,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
+
 app.UseHangfireDashboard();
+
 app.MapControllers();
-app.UseCors(policy => policy
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
 
 RecurringJob.AddOrUpdate<ITrackingService>(
     "update-tracking-statuses",
     service => service.UpdateStatusesAsync(),
-    "*/10 * * * * *" // Düzeltilmiþ cron ifadesi
+    "*/10 * * * * *" // Her 10 saniyede bir çalýþýr
 );
 
 app.Run();
