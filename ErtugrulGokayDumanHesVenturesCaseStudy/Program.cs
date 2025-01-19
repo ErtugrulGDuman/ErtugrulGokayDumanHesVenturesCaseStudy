@@ -39,6 +39,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseHangfireDashboard();
 app.MapControllers();
+app.UseCors(policy => policy
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 RecurringJob.AddOrUpdate<ITrackingService>(
     "update-tracking-statuses",
