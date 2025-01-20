@@ -1,7 +1,6 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
@@ -42,8 +41,13 @@ RUN apt-get update && apt-get install -y \
     libxrandr2 \
     xdg-utils \
     libu2f-udev \
-    libvulkan1
-# Opera ve OperaDriver kurulumu RUN apt-get update && apt-get install -y wget gnupg unzip apt-transport-https \ && wget -q -O - https://deb.opera.com/archive.key | apt-key add - \ && echo "deb [arch=amd64] https://deb.opera.com/opera-stable/ stable non-free" > /etc/apt/sources.list.d/opera.list \ && apt-get update && apt-get install -y opera-stable \ && OPERA_VERSION=$(opera --version | cut -d ' ' -f 3) \ && wget -q "https://github.com/operasoftware/operachromiumdriver/releases/download/v$OPERA_VERSION/operadriver_linux64.zip" \ && unzip operadriver_linux64.zip -d /usr/local/bin/ \ && chmod +x /usr/local/bin/operadriver \ && rm operadriver_linux64.zip
+    libvulkan1 \
+    chromium \
+    chromium-driver
+
+# ASP.NET Core uygulamasının dinleyeceği port
+ENV ASPNETCORE_URLS=http://+:8080
 
 COPY --from=publish /app/publish .
+
 ENTRYPOINT ["dotnet", "TrackingApi.dll"]

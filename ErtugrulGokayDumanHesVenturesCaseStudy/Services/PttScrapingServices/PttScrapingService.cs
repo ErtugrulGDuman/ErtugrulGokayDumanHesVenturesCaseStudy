@@ -18,7 +18,15 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Services.PttScrapingServices
             options.AddArguments("--no-sandbox");
             options.AddArguments("--disable-dev-shm-usage");
 
-            _driver = new ChromeDriver(options);
+            //_driver = new ChromeDriver(options);
+            //şimdi bi test edebilir mis
+            // Chrome binary yolunu explicit olarak belirtin
+            options.BinaryLocation = @"C:\Program Files\Google\Chrome\Application\chrome.exe"; // Chrome'un yüklü olduğu dizin
+
+            // ChromeDriver'ı projenizin bin klasöründen yükleyin
+            var driverService = ChromeDriverService.CreateDefaultService();
+
+            _driver = new ChromeDriver(driverService, options);
         }
 
         public async Task<string> GetTrackingStatus(string trackingNumber)
