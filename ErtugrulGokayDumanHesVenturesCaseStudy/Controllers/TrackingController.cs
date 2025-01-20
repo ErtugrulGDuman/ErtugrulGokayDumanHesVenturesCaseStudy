@@ -14,21 +14,25 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Controllers
         private readonly ITrackingService _trackingService;
         private readonly ILogger<TrackingController> _logger;
 
+        // Constructor ile bağımlılıkların eklenmesi
         public TrackingController(ITrackingService trackingService, ILogger<TrackingController> logger)
         {
             _trackingService = trackingService;
             _logger = logger;
         }
 
+        // Yeni bir takip oluşturmak için POST metodu
         [HttpPost]
         public async Task<ActionResult<TrackingInfo>> Create([FromBody] TrackingRequestDto request)
         {
+            // Model doğrulama kontrolü
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Invalid model state for tracking request.");
                 return BadRequest(ModelState); // Doğrulama hatalarını döndür
             }
 
+            // Boş istek kontrolü
             if (request == null)
             {
                 _logger.LogWarning("Received null tracking request.");
@@ -37,9 +41,10 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Controllers
 
             try
             {
+                // Takip numarası oluşturma işlemi
                 _logger.LogInformation("Creating tracking for number: {TrackingNumber}", request.TrackingNumber);
                 var result = await _trackingService.CreateTrackingAsync(request.TrackingNumber);
-                return Ok(result);
+                return Ok(result);// Başarılı durum döndür
             }
             catch (InvalidOperationException ex)
             {
@@ -48,6 +53,7 @@ namespace ErtugrulGokayDumanHesVenturesCaseStudy.Controllers
             }
             catch (Exception ex)
             {
+                // Çift kayıt hatası
                 _logger.LogError(ex, "Error creating tracking");
                 return StatusCode(500, "An error occurred while creating the tracking");
             }
